@@ -25,7 +25,7 @@ var tableType = graphql.NewObject(
 	},
 )
 
-var filterType = graphql.NewObject(
+var getAllType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Filter",
 		Fields: graphql.Fields{
@@ -61,16 +61,13 @@ var queryType = graphql.NewObject(
 					return tables, nil
 				},
 			},
-			"filter": &graphql.Field{
-				Type: graphql.NewList(filterType),
+			"getAll": &graphql.Field{
+				Type: graphql.NewList(getAllType),
 				Args: graphql.FieldConfigArgument{
 					"db": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
 					"table": &graphql.ArgumentConfig{
-						Type: graphql.String,
-					},
-					"filters": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
 					"limit": &graphql.ArgumentConfig{
@@ -80,9 +77,8 @@ var queryType = graphql.NewObject(
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					db := p.Args["db"].(string)
 					table := p.Args["table"].(string)
-					f := p.Args["filters"].(string)
 					limit := p.Args["limit"].(int)
-					filter := types.Filter{"f", f}
+					filter := types.Filter{}
 					filters := []types.Filter{filter}
 					q := &types.Query{db,  table,  filters, limit}
 					res, tr := run(q)
