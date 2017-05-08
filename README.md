@@ -22,7 +22,7 @@ and credentials:
 	}
    ```
 
-The `cors` parameter is a list of authorized domains that will receive cors headers in the http requests
+The `cors` parameter is a list of authorized domains that will receive cors headers in the http responses
 
 ## Run the Graphql server
 
