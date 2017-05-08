@@ -10,7 +10,7 @@ import (
 
 
 var dev = flag.Bool("d", false, "Dev mode")
-var verbosity = flag.Int("v", 0, "Verbosity")
+var verbosity = flag.Int("v", 1, "Verbosity")
 
 func main() {
 	flag.Parse()
