@@ -37,6 +37,7 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
    package main
    
    import (
+      // ...
       "github.com/synw/goregraph/db"
       g "github.com/synw/goregraph/lib-r/types"
    )
