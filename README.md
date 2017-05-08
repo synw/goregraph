@@ -1,7 +1,7 @@
 # Goregraph
 
 Turn a Rethinkdb database into an Graphql server in one minute: just connect a database and run the server. It is also 
-possible to use this package as a library to translate Graphql queries into Reql queries
+possible to use this package as a library run Reql queries from Graphql queries
 
 ## Install
 
@@ -87,7 +87,7 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
 ## Todo
 
 - [ ] Add options for the http server
-- [ ] Add cors headers option
+- [x] Add cors headers option
 - [ ] Add options to limit the dbs and tables that can be queried
 - [ ] Ratelimit requests
 - [ ] Consider adding some authentication or token mechanism (suggestions are welcome)

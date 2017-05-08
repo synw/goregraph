@@ -1,5 +1,6 @@
 {
 	"addr":"localhost:28015",
 	"user":"",
-	"password":""
+	"password":"",
+	"cors": ["*"]
 }

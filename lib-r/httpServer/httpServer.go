@@ -6,6 +6,7 @@ import (
 	"time"
 	"context"
 	"encoding/json"
+	"github.com/goware/cors"
 	"github.com/pressly/chi"
 	"github.com/pressly/chi/middleware"
 	"github.com/synw/terr"
@@ -20,12 +21,22 @@ type httpResponseWriter struct {
 }
 
 func InitHttpServer(serve bool) {
-	// routing
 	r := chi.NewRouter()
+	// middlewares
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.StripSlashes)
+	cors := cors.New(cors.Options{
+		AllowedOrigins: state.Conf.Cors,
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders: []string{"Link"},
+		AllowCredentials: true,
+		MaxAge: 300,
+	})
+	r.Use(cors.Handler)
+  
 	// routes
 	r.Route("/graphql", func(r chi.Router) {
 		r.Get("/*", handleQuery)

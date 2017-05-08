@@ -20,6 +20,7 @@ func GetConf(dev bool, verbosity int) (*types.Conf, *terr.Trace) {
 	viper.SetDefault("addr", "localhost:28015")
 	viper.SetDefault("user", "")
 	viper.SetDefault("password", "")
+	viper.SetDefault("cors", []string{})
 	// get the actual conf
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -36,6 +37,12 @@ func GetConf(dev bool, verbosity int) (*types.Conf, *terr.Trace) {
 	addr := viper.Get("addr").(string)
 	user := viper.Get("user").(string)
 	pwd := viper.Get("password").(string)
-	endconf := &types.Conf{addr, user, pwd, dev, verbosity}
+	// headers
+	crs := viper.Get("cors").([]interface{})
+	var cors []string
+	for _, c := range(crs) {
+		cors = append(cors, c.(string))
+	}
+	endconf := &types.Conf{addr, user, pwd, dev, verbosity, cors}
 	return endconf, nil
 }

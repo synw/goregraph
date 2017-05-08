@@ -31,4 +31,5 @@ type Conf struct {
 	Pwd string
 	Dev bool
 	Verb int
+	Cors []string
 }
