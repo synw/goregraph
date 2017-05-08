@@ -34,8 +34,21 @@ The server is ready for queries at `http://localhost:8080`
    package main
    
    import (
-   	"github.com/synw/goregraph/db"
+      "github.com/synw/goregraph/db"
+      g "github.com/synw/goregraph/lib-r/types"
    )
+   
+   
+   func main() {
+      // ...
+      // initialize the database connection
+      config := &g.Conf("localhost:28015", "db_user", "db_password"}
+      err := db.Init(config)
+      if err != nil {
+         fmt.Println(err)
+      }
+      // ...
+   }
    
    func handleQuery(response http.ResponseWriter, request *http.Request) {
 	  q := request.URL.Query()["query"][0]
