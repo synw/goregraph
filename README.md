@@ -17,9 +17,12 @@ and credentials:
    {
 	"addr":"localhost:28015",
 	"user":"",
-	"password":""
+	"password":"",
+	"cors": ["*"]
 	}
    ```
+
+The `cors` parameter is a list of authorized domains which to add cors headers to
 
 ## Run the Graphql server
 
