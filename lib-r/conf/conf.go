@@ -4,10 +4,12 @@ import (
 	"errors"
 	"github.com/spf13/viper"
 	"github.com/synw/terr"
+	"github.com/synw/goregraph/lib-r/types"
 )
 
 
-func GetConf(name string) (map[string]interface{}, *terr.Trace) {
+func GetConf(name string) (*types.Conf, *terr.Trace) {
+	var conf *types.Conf
 	// set some defaults for conf
 	if name == "dev" {
 		viper.SetConfigName("dev_config")
@@ -21,7 +23,6 @@ func GetConf(name string) (map[string]interface{}, *terr.Trace) {
 	// get the actual conf
 	err := viper.ReadInConfig()
 	if err != nil {
-		var conf map[string]interface{}
 		switch err.(type) {
 		case viper.ConfigParseError:
 			trace := terr.New("conf.getConf", err)
@@ -32,9 +33,9 @@ func GetConf(name string) (map[string]interface{}, *terr.Trace) {
 			return conf, trace
 		}
 	}
-	conf := make(map[string]interface{})
-	conf["addr"] = viper.Get("addr")
-	conf["user"] = viper.Get("user")
-	conf["password"] = viper.Get("password")
-	return conf, nil
+	addr := viper.Get("addr").(string)
+	user := viper.Get("user").(string)
+	pwd := viper.Get("password").(string)
+	endconf := &types.Conf{addr, user, pwd}
+	return endconf, nil
 }

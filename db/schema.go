@@ -1,6 +1,7 @@
 package db
 
 import (
+	//"fmt"
 	"github.com/graphql-go/graphql"
 	"github.com/synw/goregraph/lib-r/types"
 )
@@ -20,6 +21,16 @@ var tableType = graphql.NewObject(
 		Name: "Table",
 		Fields: graphql.Fields{
 			"name": &graphql.Field{Type: graphql.String},
+		},
+	},
+)
+
+var filterType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "Filter",
+		Fields: graphql.Fields{
+			"id": &graphql.Field{Type: graphql.String},
+			"data": &graphql.Field{Type: graphql.String},
 		},
 	},
 )
@@ -51,7 +62,7 @@ var queryType = graphql.NewObject(
 				},
 			},
 			"filter": &graphql.Field{
-				Type: graphql.NewList(tableType),
+				Type: graphql.NewList(filterType),
 				Args: graphql.FieldConfigArgument{
 					"db": &graphql.ArgumentConfig{
 						Type: graphql.String,
@@ -59,20 +70,21 @@ var queryType = graphql.NewObject(
 					"table": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
-					"key": &graphql.ArgumentConfig{
+					"filters": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
-					"val": &graphql.ArgumentConfig{
-						Type: graphql.String,
+					"limit": &graphql.ArgumentConfig{
+						Type: graphql.Int,
 					},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					db := p.Args["db"].(string)
 					table := p.Args["table"].(string)
-					key := p.Args["key"].(string)
-					val := p.Args["val"].(string)
-					filter := types.Filter{key, val}
-					q := &types.Query{db,  table,  filter}
+					f := p.Args["filters"].(string)
+					limit := p.Args["limit"].(int)
+					filter := types.Filter{"f", f}
+					filters := []types.Filter{filter}
+					q := &types.Query{db,  table,  filters, limit}
 					res, tr := run(q)
 					if tr != nil {
 						return res, tr.ToErr()

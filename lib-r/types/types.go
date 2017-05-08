@@ -10,13 +10,23 @@ type Table struct {
 }
 
 type Filter struct {
-	Key string
-	Val interface{}
+	Key string `json:"key"`
+	Val string `json:"val"`
 }
 
 type Query struct {
 	Db string
 	Table string
-	Filter
+	Filters []Filter
+	Limit int
 }
 
+type Doc struct {
+	Data interface{} `json:"data"`
+}
+
+type Conf struct {
+	Addr string
+	User string
+	Pwd string
+}

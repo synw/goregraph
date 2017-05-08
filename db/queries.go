@@ -1,29 +1,20 @@
 package db
 
 import (
-	"fmt"
+	//"fmt"
 	"github.com/synw/terr"
 	"github.com/synw/goregraph/lib-r/state"
 	"github.com/synw/goregraph/lib-r/types"
 )
 
 
-func run(q *types.Query) (interface{}, *terr.Trace) {
-	/*
-	if len(q.filter > 0)
-	
-	
-	
-	tbs, tr := GetFilter(dbstr, tablestr, key, val)
+func run(q *types.Query) ([]*types.Doc, *terr.Trace) {
+	docs, tr := getDocs(q)
 	if tr != nil {
-		return tables, tr
+		tr.Printc()
+		return docs, tr
 	}
-	for _, table := range(tbs) {
-		t := Table{table}
-		tables = append(tables, &t)
-	}*/
-	fmt.Println(q)
-	return q, nil
+	return docs, nil
 }
 
 func getTables(dbstr string) ([]*types.Table, *terr.Trace) {

@@ -4,12 +4,11 @@ import (
 	"net/http"
 	"github.com/synw/terr"
 	"github.com/synw/goregraph/lib-r/conf"
+	"github.com/synw/goregraph/lib-r/types"
 )
 
 
-var Addr string
-var User string
-var Pwd string
+var Conf *types.Conf
 var HttpServer *http.Server
 var Verbosity int
 var Dbs []string
@@ -23,9 +22,6 @@ func InitState(name string, verbosity int) *terr.Trace {
 	if tr != nil {
 		return tr
 	}
-	// db credentials
-	Addr = cf["addr"].(string)
-	User = cf["user"].(string)
-	Pwd = cf["password"].(string)
+	Conf = cf
 	return nil
 }

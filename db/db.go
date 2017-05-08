@@ -7,6 +7,7 @@ import (
 	"github.com/graphql-go/graphql"
 	"github.com/synw/terr"
 	"github.com/synw/goregraph/lib-r/state"
+	"github.com/synw/goregraph/lib-r/types"
 )
 
 var conn *r.Session
@@ -36,7 +37,7 @@ func InitVerbose(dev_mode ...string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("Database ready at", state.Addr)
+	fmt.Println("Database ready at", state.Conf.Addr)
 	return nil
 }
 
@@ -63,6 +64,31 @@ func Init(dev_mode ...string) error {
 	}
 	state.Dbs = dbs
 	return nil
+}
+
+func getDocs(q *types.Query) ([]*types.Doc, *terr.Trace) {
+	var docs []*types.Doc
+	var reql r.Term
+	if q.Limit > 0 {
+		reql = r.DB(q.Db).Table(q.Table).Limit(q.Limit)
+	} else {
+		reql = r.DB(q.Db).Table(q.Table)
+	}
+	res, err := reql.Run(conn)
+	if err != nil {
+		tr := terr.New("db.getDocs", err)
+		return docs, tr
+	}
+	var row interface{}
+	for res.Next(&row) {
+		doc := &types.Doc{row}
+	    docs = append(docs, doc)
+	}
+	if res.Err() != nil {
+	    tr := terr.New("db.getDocs", err)
+		return docs, tr
+	}
+	return docs, nil
 }
 
 func GetTables(db string) ([]string, *terr.Trace) {
@@ -114,9 +140,9 @@ func initDb() *terr.Trace {
 }
 
 func connect() (*r.Session, *terr.Trace) {
-	user := state.User
-	pwd := state.Pwd
-	addr := state.Addr
+	user := state.Conf.User
+	pwd := state.Conf.Pwd
+	addr := state.Conf.Addr
 	// connect to Rethinkdb
 	session, err := r.Connect(r.ConnectOpts{
 		Address: addr,
