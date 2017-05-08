@@ -58,7 +58,7 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
 	  if tr != nil {
 	     // tr is a custom stack trace from goregraph
 	     fmt.Println(tr.Print())
-	  	 // to translate it to an error your can do: tr.ToErr()
+	     // to translate it to an error your can do: tr.ToErr()
 	  }
 	  json_bytes, err := json.Marshal(result.Data)
 	  if err != nil {
@@ -88,4 +88,5 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
 - [ ] Add cors headers option
 - [ ] Add options to limit the dbs and tables that can be queried
 - [ ] Ratelimit requests
+- [ ] Consider adding some authentication or token mechanism (suggestions are welcome)
 - [ ] More queries
