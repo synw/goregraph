@@ -91,3 +91,10 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
 - [ ] Ratelimit requests
 - [ ] Consider adding some authentication or token mechanism (suggestions are welcome)
 - [ ] More queries
+
+## Credits
+
+- [Gorethink](https://github.com/GoRethink/gorethink): Rethinkdb drivers
+- [Graphql-go](https://github.com/graphql-go/graphql): Graphql drivers
+- [Terr](https://github.com/synw/terr): error handling
+
