@@ -93,6 +93,7 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
 - [x] Add cors headers option
 - [ ] Add options to limit the dbs and tables that can be queried
 - [ ] Ratelimit requests
+- [ ] Custom schema injection mechanism
 - [ ] Consider adding some authentication or token mechanism (suggestions are welcome)
 - [ ] More queries
 
@@ -100,5 +101,7 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
 
 - [Gorethink](https://github.com/GoRethink/gorethink): Rethinkdb drivers
 - [Graphql-go](https://github.com/graphql-go/graphql): Graphql drivers
+- [Chi](https://github.com/pressly/chi): http router
+- [Cors](https://github.com/goware/cors): cors http headers
 - [Terr](https://github.com/synw/terr): error handling
 
