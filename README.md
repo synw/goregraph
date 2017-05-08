@@ -1,6 +1,7 @@
 # Goregraph
 
-Turn a Rethinkdb database into an Graphql server in one minute
+Turn a Rethinkdb database into an Graphql server in one minute: just connect a database and run the server. It is also 
+possible to use this package as a library to translate Graphql queries into Reql queries
 
 ## Install
 
