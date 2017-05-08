@@ -28,6 +28,8 @@ and credentials:
 
 The server is ready for queries at `http://localhost:8080`
 
+Check the [available queries](https://github.com/synw/goregraph#available-queries)
+
 ## Use as library
 
    ```go
