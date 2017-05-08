@@ -4,9 +4,7 @@ import (
 	"net/http"
 	"fmt"
 	"time"
-	"os"
 	"context"
-	"path/filepath"
 	"encoding/json"
 	"github.com/pressly/chi"
 	"github.com/pressly/chi/middleware"
@@ -33,23 +31,20 @@ func InitHttpServer(serve bool) {
 		r.Get("/*", handleQuery)
 	})
 	// init
-	loc := ":8080"
 	httpServer := &http.Server{
-		Addr: loc,
+		Addr: state.Addr,
 	    ReadTimeout: 5 * time.Second,
 	    WriteTimeout: 10 * time.Second,
 	    Handler: r,
 	}
 	state.HttpServer = httpServer
-	// static
-	workDir, _ := os.Getwd()
-	filesDir := filepath.Join(workDir, "static")
-	r.FileServer("/static", http.Dir(filesDir))
 	// run
 	if state.Verbosity > 0 {
 		fmt.Println("Starting http server ...")
 	}
-	Run()
+	if serve { 
+		Run() 
+	}
 }
 
 func Run() {

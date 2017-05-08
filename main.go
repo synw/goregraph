@@ -9,27 +9,19 @@ import (
 )
 
 
-var dev_mode = flag.Bool("d", false, "Dev mode")
+var dev = flag.Bool("d", false, "Dev mode")
 var verbosity = flag.Int("v", 0, "Verbosity")
 
 func main() {
 	flag.Parse()
-	name := "normal"
-	if *dev_mode == true {
-		name = "dev"
-	}
 	// init state
-	state.InitState(name, *verbosity)
-	if *verbosity > 0 {
-		db.InitVerbose(name)
-	} else {
-		db.Init(name)
-	}
+	state.InitState(*dev, *verbosity)
+	// init db
+	db.Init(state.Conf, false)
 	// run http server
 	defer httpServer.Stop() 
 	if *verbosity > 0 { 
 		defer fmt.Println("Exit") 
 	}
 	httpServer.InitHttpServer(true)
-	select{}
 }

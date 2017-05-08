@@ -27,32 +27,11 @@ func RunQuery(query string) (*graphql.Result, *terr.Trace) {
 	return result, nil
 }
 
-func InitVerbose(dev_mode ...string) error {
-	verbose = 1
-	dm := "normal"
-	if len(dev_mode) > 0 {
-		dm = dev_mode[0]
+func Init(config *types.Conf, noinit ...bool) error {
+	if len(noinit) == 0 {
+		state.InitState(config.Dev, config.Verb, config)
 	}
-	err := Init(dm)
-	if err != nil {
-		return err
-	}
-	fmt.Println("Database ready at", state.Conf.Addr)
-	return nil
-}
-
-func Init(dev_mode ...string) error {
-	dm := "normal"
-	if len(dev_mode) > 0 {
-		dm = dev_mode[0]
-	}
-	// init state
-	tr := state.InitState(dm, verbose)
-	if tr != nil {
-		fmt.Println(tr.Formatc())
-	}
-	// init db
-	tr = initDb()
+	tr := initDb()
 	if tr != nil {
 		err := tr.ToErr()
 		return err
@@ -63,6 +42,8 @@ func Init(dev_mode ...string) error {
 		return err
 	}
 	state.Dbs = dbs
+	// print message if verbose option
+	ready()
 	return nil
 }
 
@@ -156,4 +137,10 @@ func connect() (*r.Session, *terr.Trace) {
         return session, tr
     }
     return session, nil
+}
+
+func ready() {
+	if state.Verbosity > 0 {
+		fmt.Println("Database ready at", state.Conf.Addr)
+	}
 }

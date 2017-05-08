@@ -8,10 +8,10 @@ import (
 )
 
 
-func GetConf(name string, verbosity int) (*types.Conf, *terr.Trace) {
+func GetConf(dev bool, verbosity int) (*types.Conf, *terr.Trace) {
 	var conf *types.Conf
 	// set some defaults for conf
-	if name == "dev" {
+	if dev {
 		viper.SetConfigName("dev_config")
 	} else {
 		viper.SetConfigName("config")
@@ -36,8 +36,6 @@ func GetConf(name string, verbosity int) (*types.Conf, *terr.Trace) {
 	addr := viper.Get("addr").(string)
 	user := viper.Get("user").(string)
 	pwd := viper.Get("password").(string)
-	dev := false
-	if name == "dev" { dev = true };
 	endconf := &types.Conf{addr, user, pwd, dev, verbosity}
 	return endconf, nil
 }
