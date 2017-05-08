@@ -29,4 +29,6 @@ type Conf struct {
 	Addr string
 	User string
 	Pwd string
+	Dev bool
+	Verb int
 }

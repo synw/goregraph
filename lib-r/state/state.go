@@ -15,10 +15,14 @@ var Dbs []string
 var Db string
 var Table string
 
-func InitState(name string, verbosity int) *terr.Trace {
+func InitState(name string, verbosity int, config ...*types.Conf) *terr.Trace {
 	Verbosity = verbosity
 	// config
-	cf, tr := conf.GetConf(name)
+	if len(config) == 1 {
+		Conf = config[0]
+		return nil
+	}
+	cf, tr := conf.GetConf(name, verbosity)
 	if tr != nil {
 		return tr
 	}
