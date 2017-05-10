@@ -5,13 +5,16 @@ import (
 	"fmt"
 	"time"
 	"context"
+	"errors"
 	"encoding/json"
 	"github.com/goware/cors"
 	"github.com/pressly/chi"
 	"github.com/pressly/chi/middleware"
+	"github.com/graphql-go/graphql"
 	"github.com/synw/terr"
 	"github.com/synw/goregraph/db"
 	"github.com/synw/goregraph/lib-r/state"
+	"reflect"
 )
 
 
@@ -79,14 +82,35 @@ func Stop() *terr.Trace {
 
 func handleQuery(response http.ResponseWriter, request *http.Request) {
 	q := request.URL.Query()["query"][0]
-	result, tr := db.RunQuery(q)
+	/*res, tr := db.RunQuery(q)
 	if tr != nil {
 		fmt.Println(tr.Formatc())
+	}*/
+	res := graphql.Do(graphql.Params{
+		Schema: db.Schema,
+		RequestString: q,
+	})
+	if len(res.Errors) > 0 {
+		msg := fmt.Sprintf("wrong res, unexpected errors: %v", res.Errors)
+		err := errors.New(msg)
+		tr := terr.New("httpServer.handleQuery", err)
+		tr.Printf("httpServer.handleQuery")
 	}
-	json_bytes, err := json.Marshal(result.Data)
-	if err != nil {
+	//w := json.NewEncoder(response).Encode(res)
+	//fmt.Println("RES", res)
+	//return w
+	
+	data := res.Data
+	
+	//json_bytes := data.Obj.Bytes()
+	fmt.Println("DATA", reflect.TypeOf(data), data)
+	
+	json_bytes, _ := json.Marshal(data)
+	
+	//json_bytes, err := json.Marshal(data)
+	/*if err != nil {
 		fmt.Println(err)
-	}
+	}*/
 	response = headers(response)
 	fmt.Fprintf(response, "%s\n", json_bytes)
 }

@@ -2,30 +2,17 @@ package db
 
 import (
 	"fmt"
-	"errors"
 	r "gopkg.in/dancannon/gorethink.v3"
-	"github.com/graphql-go/graphql"
 	"github.com/synw/terr"
 	"github.com/synw/goregraph/lib-r/state"
 	"github.com/synw/goregraph/lib-r/types"
+	//"encoding/json"
+	//"reflect"
 )
 
 var conn *r.Session
 var verbose = 0
 
-func RunQuery(query string) (*graphql.Result, *terr.Trace) {
-	result := graphql.Do(graphql.Params{
-		Schema: Schem,
-		RequestString: query,
-	})
-	if len(result.Errors) > 0 {
-		msg := fmt.Sprintf("wrong result, unexpected errors: %v", result.Errors)
-		err := errors.New(msg)
-		tr := terr.New("schema.ExecuteQuery", err)
-		return result, tr
-	}
-	return result, nil
-}
 
 func Init(config *types.Conf, noinit ...bool) error {
 	if len(noinit) == 0 {
@@ -45,31 +32,6 @@ func Init(config *types.Conf, noinit ...bool) error {
 	// print message if verbose option
 	ready()
 	return nil
-}
-
-func getDocs(q *types.Query) ([]*types.Doc, *terr.Trace) {
-	var docs []*types.Doc
-	var reql r.Term
-	if q.Limit > 0 {
-		reql = r.DB(q.Db).Table(q.Table).Limit(q.Limit)
-	} else {
-		reql = r.DB(q.Db).Table(q.Table)
-	}
-	res, err := reql.Run(conn)
-	if err != nil {
-		tr := terr.New("db.getDocs", err)
-		return docs, tr
-	}
-	var row interface{}
-	for res.Next(&row) {
-		doc := &types.Doc{row}
-	    docs = append(docs, doc)
-	}
-	if res.Err() != nil {
-	    tr := terr.New("db.getDocs", err)
-		return docs, tr
-	}
-	return docs, nil
 }
 
 func GetTables(db string) ([]string, *terr.Trace) {

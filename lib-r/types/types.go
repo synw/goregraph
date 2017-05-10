@@ -22,7 +22,7 @@ type Query struct {
 }
 
 type Doc struct {
-	Data interface{} `json:"data"`
+	Data string `json:"data"`
 }
 
 type Conf struct {

@@ -1,9 +1,10 @@
 package db
 
 import (
-	//"fmt"
+	"fmt"
 	"github.com/graphql-go/graphql"
 	"github.com/synw/goregraph/lib-r/types"
+	"reflect"
 )
 
 
@@ -25,11 +26,10 @@ var tableType = graphql.NewObject(
 	},
 )
 
-var getAllType = graphql.NewObject(
+var docType = graphql.NewObject(
 	graphql.ObjectConfig{
-		Name: "Filter",
+		Name: "Doc",
 		Fields: graphql.Fields{
-			"id": &graphql.Field{Type: graphql.String},
 			"data": &graphql.Field{Type: graphql.String},
 		},
 	},
@@ -61,8 +61,36 @@ var queryType = graphql.NewObject(
 					return tables, nil
 				},
 			},
+			"get": &graphql.Field{
+				Type: docType,
+				Args: graphql.FieldConfigArgument{
+					"db": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"table": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"id": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+				},
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					db := p.Args["db"].(string)
+					table := p.Args["table"].(string)
+					//id := p.Args["id"].(string)		
+					filter := types.Filter{}
+					filters := []types.Filter{filter}
+					q := &types.Query{db,  table,  filters, 0}
+					doc, tr := getDoc(q)
+					if tr != nil {
+						return doc.Data, tr.ToErr()
+					}
+					fmt.Println("DOC", reflect.TypeOf(doc), doc.Data)
+					return doc, nil
+				},
+			},
 			"getAll": &graphql.Field{
-				Type: graphql.NewList(getAllType),
+				Type: graphql.NewList(docType),
 				Args: graphql.FieldConfigArgument{
 					"db": &graphql.ArgumentConfig{
 						Type: graphql.String,
@@ -81,17 +109,22 @@ var queryType = graphql.NewObject(
 					filter := types.Filter{}
 					filters := []types.Filter{filter}
 					q := &types.Query{db,  table,  filters, limit}
-					res, tr := run(q)
+					res, tr := getDocs(q)
 					if tr != nil {
 						return res, tr.ToErr()
 					}
-					return res, nil
+					var data []*types.Doc
+					for _, doc := range(res) {
+						data = append(data, doc)
+						fmt.Println("ELEM", doc.Data[0:15])
+					}
+					return data, nil
 				},
 			},
 		},
 	})
 
-var Schem, _ = graphql.NewSchema(
+var Schema, _ = graphql.NewSchema(
 	graphql.SchemaConfig{
 		Query: queryType,
 	},
