@@ -14,7 +14,6 @@ import (
 	"github.com/synw/terr"
 	"github.com/synw/goregraph/db"
 	"github.com/synw/goregraph/lib-r/state"
-	"reflect"
 )
 
 
@@ -87,7 +86,7 @@ func handleQuery(response http.ResponseWriter, request *http.Request) {
 		fmt.Println(tr.Formatc())
 	}*/
 	res := graphql.Do(graphql.Params{
-		Schema: db.Schema,
+		Schema: db.Schem,
 		RequestString: q,
 	})
 	if len(res.Errors) > 0 {
@@ -96,14 +95,10 @@ func handleQuery(response http.ResponseWriter, request *http.Request) {
 		tr := terr.New("httpServer.handleQuery", err)
 		tr.Printf("httpServer.handleQuery")
 	}
-	//w := json.NewEncoder(response).Encode(res)
-	//fmt.Println("RES", res)
-	//return w
 	
 	data := res.Data
-	
 	//json_bytes := data.Obj.Bytes()
-	fmt.Println("DATA", reflect.TypeOf(data), data)
+	//fmt.Println("DATA", reflect.TypeOf(data))
 	
 	json_bytes, _ := json.Marshal(data)
 	

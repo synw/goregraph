@@ -3,6 +3,9 @@
 Turn a Rethinkdb database into an Graphql server in one minute: just connect a database and run the server. It is also 
 possible to use this package as a library to run Reql queries from Graphql queries
 
+The goal of this project is to have an API server that can plug on an existing Rethinkdb database and be instantly ready
+to serve some predefined basic queries from it
+
 ## Install
 
    ```bash
@@ -84,9 +87,9 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
    curl -g 'http://localhost:8080/graphql?query={tables(db:"rethinkdb"){name}}'
    
    # get some documents
-   curl -g 'http://localhost:8080/graphql?query={getAll(db:"rethinkdb",table:"logs",limit:20){data,id}}' 
+   curl -g 'http://localhost:8080/graphql?query={getAll(db:"rethinkdb",table:"logs",limit:20){data}}' 
    ```
-   
+
 ## Todo
 
 - [ ] Add options for the http server

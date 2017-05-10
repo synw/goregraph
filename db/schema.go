@@ -116,7 +116,7 @@ var queryType = graphql.NewObject(
 					var data []*types.Doc
 					for _, doc := range(res) {
 						data = append(data, doc)
-						fmt.Println("ELEM", doc.Data[0:15])
+						//fmt.Println("ELEM", doc.Data[0:15])
 					}
 					return data, nil
 				},
@@ -124,7 +124,7 @@ var queryType = graphql.NewObject(
 		},
 	})
 
-var Schema, _ = graphql.NewSchema(
+var Schem, _ = graphql.NewSchema(
 	graphql.SchemaConfig{
 		Query: queryType,
 	},

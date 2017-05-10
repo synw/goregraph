@@ -7,7 +7,6 @@ import (
 	"github.com/synw/terr"
 	"github.com/synw/goregraph/lib-r/state"
 	"github.com/synw/goregraph/lib-r/types"
-	"reflect"
 )
 
 
@@ -54,9 +53,9 @@ func getDocs(q *types.Query) ([]*types.Doc, *terr.Trace) {
 	    doc := &types.Doc{obj.String()}
 		objs.ArrayAppend(doc, "docs", "array")
 		docs = append(docs, doc)
-    	fmt.Println("JSON", reflect.TypeOf(doc), doc.Data[0:15])
+    	//fmt.Println("JSON", reflect.TypeOf(doc), doc.Data[0:15])
 	}
-	fmt.Println("DOCS", docs)
+	//fmt.Println("DOCS", docs)
 	return docs, nil
 }
 
