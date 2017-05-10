@@ -95,6 +95,7 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
 - [ ] Add options for the http server
 - [x] Add cors headers option
 - [ ] Add options to limit the dbs and tables that can be queried
+- [ ] Better error handling
 - [ ] Ratelimit requests
 - [ ] Custom schema injection mechanism
 - [ ] Consider adding some authentication or token mechanism (suggestions are welcome)
