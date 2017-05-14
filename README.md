@@ -43,38 +43,21 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
    package main
    
    import (
-      // ...
-      "github.com/synw/goregraph/db"
-      g "github.com/synw/goregraph/lib-r/types"
+    "log"
+    "net/http"
+    g "github.com/synw/goregraph/lib-r/httpServer"
+    
    )
-   
-   
+
    func main() {
-      // ...
-      // initialize the database connection
-      config := &g.Conf("localhost:28015", "db_user", "db_password"}
-      err := db.Init(config)
-      if err != nil {
-         fmt.Println(err)
-      }
-      // ...
-   }
-   
-   func handleQuery(response http.ResponseWriter, request *http.Request) {
-	  q := request.URL.Query()["query"][0]
-	  result, tr := db.RunQuery(q)
-	  if tr != nil {
-	     // tr is a custom stack trace from goregraph
-	     fmt.Println(tr.Print())
-	     // to translate it to an error your can do: tr.ToErr()
-	  }
-	  json_bytes, err := json.Marshal(result.Data)
-	  if err != nil {
-	     fmt.Println(err)
-	  }
-	  response.Header().Set("Content-Type", "application/json")
-	  fmt.Fprintf(response, "%s\n", json_bytes)
-   }
+    //normal stuff
+    http.HandleFunc("/*", MyPageHandler)
+    // map your graphql endpoint here
+    http.HandleFunc("/graphql", g.HandleQuery)
+    // done
+    log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
    ```
 
 ## Available queries:

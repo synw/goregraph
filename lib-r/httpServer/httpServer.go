@@ -77,8 +77,6 @@ func Stop() *terr.Trace {
 	return nil
 }
 
-// internal methods
-
 func HandleQuery(response http.ResponseWriter, request *http.Request) {
 	q := request.URL.Query()["query"][0]
 	res := graphql.Do(graphql.Params{
@@ -96,6 +94,8 @@ func HandleQuery(response http.ResponseWriter, request *http.Request) {
 	response = headers(response)
 	fmt.Fprintf(response, "%s\n", json_bytes)
 }
+
+// internal methods
 
 func headers(response http.ResponseWriter) http.ResponseWriter {
 	response.Header().Set("Content-Type", "application/json")
