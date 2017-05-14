@@ -96,6 +96,7 @@ func connect() (*r.Session, *terr.Trace) {
 	})
     if err != nil {
         tr := terr.New("db.rethinkdb.connectToDb()", err)
+        terr.Fatal("db.connect", tr)
         return session, tr
     }
     return session, nil
