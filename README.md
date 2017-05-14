@@ -61,7 +61,7 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
     addr := "localhost:28015"
 	user := "admin"
 	pwd := "adminpasswd"
-	cors := []string{addr}
+	cors := []string{"localhost"}
 	verbosity = 0
 	conf := &types.Conf{addr, user, pwd, dev, verbosity, cors}
 	
