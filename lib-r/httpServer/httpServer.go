@@ -41,7 +41,7 @@ func InitHttpServer(serve bool) {
   
 	// routes
 	r.Route("/graphql", func(r chi.Router) {
-		r.Get("/*", handleQuery)
+		r.Get("/*", HandleQuery)
 	})
 	// init
 	httpServer := &http.Server{
@@ -79,12 +79,8 @@ func Stop() *terr.Trace {
 
 // internal methods
 
-func handleQuery(response http.ResponseWriter, request *http.Request) {
+func HandleQuery(response http.ResponseWriter, request *http.Request) {
 	q := request.URL.Query()["query"][0]
-	/*res, tr := db.RunQuery(q)
-	if tr != nil {
-		fmt.Println(tr.Formatc())
-	}*/
 	res := graphql.Do(graphql.Params{
 		Schema: db.Schem,
 		RequestString: q,
@@ -95,17 +91,8 @@ func handleQuery(response http.ResponseWriter, request *http.Request) {
 		tr := terr.New("httpServer.handleQuery", err)
 		tr.Printf("httpServer.handleQuery")
 	}
-	
 	data := res.Data
-	//json_bytes := data.Obj.Bytes()
-	//fmt.Println("DATA", reflect.TypeOf(data))
-	
 	json_bytes, _ := json.Marshal(data)
-	
-	//json_bytes, err := json.Marshal(data)
-	/*if err != nil {
-		fmt.Println(err)
-	}*/
 	response = headers(response)
 	fmt.Fprintf(response, "%s\n", json_bytes)
 }
