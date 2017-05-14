@@ -45,7 +45,9 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
    import (
     "log"
     "net/http"
-    g "github.com/synw/goregraph/lib-r/httpServer"
+    "github.com/synw/goregraph/lib-r/types"
+    "github.com/synw/goregraph/db"
+    grg "github.com/synw/goregraph/lib-r/httpServer"
     
    )
 
@@ -53,7 +55,22 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
     //normal stuff
     http.HandleFunc("/*", MyPageHandler)
     // map your graphql endpoint here
-    http.HandleFunc("/graphql", g.HandleQuery)
+    http.HandleFunc("/graphql", grg.HandleQuery)
+    
+    // database config
+    addr := "localhost:28015"
+	user := "admin"
+	pwd := "adminpasswd"
+	cors := []string{addr}
+	verbosity = 0
+	conf := &types.Conf{addr, user, pwd, dev, verbosity, cors}
+	
+    // init and check the database connection
+	err := db.Init(conf)
+	if err != nil {
+		fmt.Println(err)
+	}
+    
     // done
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
