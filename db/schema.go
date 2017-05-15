@@ -105,7 +105,11 @@ var queryType = graphql.NewObject(
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					db := p.Args["db"].(string)
 					table := p.Args["table"].(string)
-					limit := p.Args["limit"].(int)
+					limitI := p.Args["limit"]
+					limit := 0
+					if limitI != nil {
+						limit = limitI.(int)
+					}
 					filter := types.Filter{}
 					filters := []types.Filter{filter}
 					q := &types.Query{db,  table,  filters, limit}
