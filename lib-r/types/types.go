@@ -9,16 +9,11 @@ type Table struct {
 	Name string `json:"name"`
 }
 
-type Filter struct {
-	Key string `json:"key"`
-	Val string `json:"val"`
-}
-
 type Query struct {
 	Db string
 	Table string
-	Filters []Filter
 	Limit int
+	Pluck []string
 }
 
 type Doc struct {

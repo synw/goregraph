@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	//"strings"
 	r "gopkg.in/dancannon/gorethink.v3"
 	"github.com/Jeffail/gabs"
 	"github.com/synw/terr"
@@ -30,12 +31,13 @@ func getDoc(q *types.Query) (*types.Doc, *terr.Trace) {
 }
 
 func getDocs(q *types.Query) ([]*types.Doc, *terr.Trace) {
-	var reql r.Term
 	var docs []*types.Doc
+	reql := r.DB(q.Db).Table(q.Table)
 	if q.Limit > 0 {
-		reql = r.DB(q.Db).Table(q.Table).Limit(q.Limit)
-	} else {
-		reql = r.DB(q.Db).Table(q.Table)
+		reql = reql.Limit(q.Limit)
+	} 
+	if len(q.Pluck) > 0 {
+		reql = reql.Pluck(q.Pluck)
 	}
 	res, err := reql.Run(conn)
 	if err != nil {

@@ -86,9 +86,17 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
    # get a list of tables in a database
    curl -g 'http://localhost:8080/graphql?query={tables(db:"rethinkdb"){name}}'
    
-   # get some documents
-   curl -g 'http://localhost:8080/graphql?query={getAll(db:"rethinkdb",table:"logs",limit:20){data}}' 
+   # get all documents from a table
+   curl -g 'http://localhost:8080/graphql?query={docs(db:"rethinkdb",table:"logs"){data}}'
+   
+   # limit the number of documents to return
+   curl -g 'http://localhost:8080/graphql?query={docs(db:"rethinkdb",table:"logs",limit:10){data}}'
+   
+   # pluck: limit the fields to return
+   curl -g 'http://localhost:8080/graphql?query={docs(db:"rethinkdb",table:"logs",pluck:"field1,field2"){data}}'
    ```
+
+You can use multiple options together: pluck with limit for example
 
 ## Todo
 

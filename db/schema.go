@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"strings"
 	"github.com/graphql-go/graphql"
 	"github.com/synw/goregraph/lib-r/types"
 	"reflect"
@@ -77,10 +78,8 @@ var queryType = graphql.NewObject(
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					db := p.Args["db"].(string)
 					table := p.Args["table"].(string)
-					//id := p.Args["id"].(string)		
-					filter := types.Filter{}
-					filters := []types.Filter{filter}
-					q := &types.Query{db,  table,  filters, 0}
+					var pluck []string
+					q := &types.Query{db, table, 0, pluck}
 					doc, tr := getDoc(q)
 					if tr != nil {
 						return doc.Data, tr.ToErr()
@@ -101,18 +100,30 @@ var queryType = graphql.NewObject(
 					"limit": &graphql.ArgumentConfig{
 						Type: graphql.Int,
 					},
+					"pluck": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					db := p.Args["db"].(string)
 					table := p.Args["table"].(string)
-					limitI := p.Args["limit"]
+					limitArg := p.Args["limit"]
 					limit := 0
-					if limitI != nil {
-						limit = limitI.(int)
+					if limitArg != nil {
+						limit = limitArg.(int)
 					}
-					filter := types.Filter{}
-					filters := []types.Filter{filter}
-					q := &types.Query{db,  table,  filters, limit}
+					pluckArg := p.Args["pluck"]
+					var pluck []string
+					if pluckArg != nil {
+						pluckStr := pluckArg.(string)
+						i := strings.Index(pluckStr, ",")
+						if i > -1 {
+							pluck = strings.Split(pluckStr, ",")
+						} else {
+							pluck = []string{pluckStr}
+						}
+					}
+					q := &types.Query{db, table, limit, pluck}
 					res, tr := getDocs(q)
 					if tr != nil {
 						return res, tr.ToErr()
