@@ -4,7 +4,7 @@ Turn a Rethinkdb database into an Graphql server in one minute: just connect a d
 possible to use this package as a library to run Reql queries from Graphql queries
 
 The goal of this project is to have an API server that can plug on an existing Rethinkdb database and be instantly ready
-to serve some predefined basic queries from it
+to serve some basic read only queries from it
 
 ## Install
 
@@ -96,7 +96,9 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
    curl -g 'http://localhost:8080/graphql?query={docs(db:"rethinkdb",table:"logs",pluck:"field1,field2"){data}}'
    ```
 
-You can use multiple options together: pluck with limit for example
+You can use multiple options together like pluck with limit.
+
+Note: the `data` received is a string: you will have to parse it to turn it into json data
 
 ## Todo
 
@@ -107,7 +109,23 @@ You can use multiple options together: pluck with limit for example
 - [ ] Ratelimit requests
 - [ ] Custom schema injection mechanism
 - [ ] Consider adding some authentication or token mechanism (suggestions are welcome)
-- [ ] More queries
+- [ ] More queries and query options
+
+## Roadmap
+
+- [x] Backend: translate graphql queries to reql queries
+- [x] Backend: graphql server
+- [x] Explore databases and tables
+- [x] Fetch arbitrary documents from the database
+- [ ] Format documents and detect types
+- [ ] Basic inline edit features
+- [ ] Add option to use Codemirror to edit some fields
+- [ ] Backend mutations to save document
+- [ ] Display more info in ui about query results
+- [ ] Delete documents
+- [ ] Create databases and tables
+- [ ] Start with the collaborative editor feature
+- [ ] Keep on working on the todo list
 
 ## Credits
 
