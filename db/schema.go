@@ -61,7 +61,7 @@ var queryType = graphql.NewObject(
 					return tables, nil
 				},
 			},
-			"get": &graphql.Field{
+			"doc": &graphql.Field{
 				Type: docType,
 				Args: graphql.FieldConfigArgument{
 					"db": &graphql.ArgumentConfig{
@@ -89,7 +89,7 @@ var queryType = graphql.NewObject(
 					return doc, nil
 				},
 			},
-			"getAll": &graphql.Field{
+			"docs": &graphql.Field{
 				Type: graphql.NewList(docType),
 				Args: graphql.FieldConfigArgument{
 					"db": &graphql.ArgumentConfig{

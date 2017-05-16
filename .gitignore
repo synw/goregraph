@@ -9,6 +9,7 @@ _obj
 _test
 .project
 .metadata
+.pydevproject
 
 # Architecture specific extensions/prefixes
 *.[568vq]
