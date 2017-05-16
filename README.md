@@ -109,25 +109,8 @@ Note: the `data` received is a string: you will have to parse it to turn it into
 - [ ] Better error handling
 - [ ] Ratelimit requests
 - [ ] Custom schema injection mechanism
-- [ ] Consider adding some authentication or token mechanism (suggestions are welcome)
+- [ ] Consider adding some authentication or token mechanism
 - [ ] More queries and query options
-
-## Roadmap
-
-- [x] Backend: translate graphql queries to reql queries
-- [x] Backend: graphql server
-- [x] Explore databases and tables
-- [x] Fetch arbitrary documents from the database
-- [ ] Format documents and detect types
-- [ ] Basic inline edit features
-- [ ] Add option to use Codemirror to edit some fields
-- [ ] Backend mutations to save document
-- [ ] Users and permissions management
-- [ ] Display more info in ui about query results
-- [ ] Delete documents
-- [ ] Create databases and tables
-- [ ] Start with the collaborative editor feature
-- [ ] Keep on working on the todo list
 
 ## Credits
 
