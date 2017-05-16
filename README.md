@@ -122,6 +122,7 @@ Note: the `data` received is a string: you will have to parse it to turn it into
 - [ ] Basic inline edit features
 - [ ] Add option to use Codemirror to edit some fields
 - [ ] Backend mutations to save document
+- [ ] Users and permissions management
 - [ ] Display more info in ui about query results
 - [ ] Delete documents
 - [ ] Create databases and tables
