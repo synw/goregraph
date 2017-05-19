@@ -1,21 +1,20 @@
 package httpServer
 
 import (
-	"net/http"
-	"fmt"
-	"time"
 	"context"
-	"errors"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/goware/cors"
+	"github.com/graphql-go/graphql"
 	"github.com/pressly/chi"
 	"github.com/pressly/chi/middleware"
-	"github.com/graphql-go/graphql"
-	"github.com/synw/terr"
 	"github.com/synw/goregraph/db"
 	"github.com/synw/goregraph/lib-r/state"
+	"github.com/synw/terr"
+	"net/http"
+	"time"
 )
-
 
 type httpResponseWriter struct {
 	http.ResponseWriter
@@ -30,33 +29,33 @@ func InitHttpServer(serve bool) {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.StripSlashes)
 	cors := cors.New(cors.Options{
-		AllowedOrigins: state.Conf.Cors,
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders: []string{"Link"},
+		AllowedOrigins:   state.Conf.Cors,
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: true,
-		MaxAge: 300,
+		MaxAge:           300,
 	})
 	r.Use(cors.Handler)
-  
+
 	// routes
 	r.Route("/graphql", func(r chi.Router) {
 		r.Get("/*", HandleQuery)
 	})
 	// init
 	httpServer := &http.Server{
-		Addr: state.Addr,
-	    ReadTimeout: 5 * time.Second,
-	    WriteTimeout: 10 * time.Second,
-	    Handler: r,
+		Addr:         state.Addr,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		Handler:      r,
 	}
 	state.HttpServer = httpServer
 	// run
 	if state.Verbosity > 0 {
 		fmt.Println("Starting http server ...")
 	}
-	if serve { 
-		Run() 
+	if serve {
+		Run()
 	}
 }
 
@@ -80,7 +79,7 @@ func Stop() *terr.Trace {
 func HandleQuery(response http.ResponseWriter, request *http.Request) {
 	q := request.URL.Query()["query"][0]
 	res := graphql.Do(graphql.Params{
-		Schema: db.Schem,
+		Schema:        db.Schem,
 		RequestString: q,
 	})
 	if len(res.Errors) > 0 {
@@ -90,6 +89,7 @@ func HandleQuery(response http.ResponseWriter, request *http.Request) {
 		tr.Printf("httpServer.handleQuery")
 	}
 	data := res.Data
+	//fmt.Println("DATA", data)
 	json_bytes, _ := json.Marshal(data)
 	response = headers(response)
 	fmt.Fprintf(response, "%s\n", json_bytes)

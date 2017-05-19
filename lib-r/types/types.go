@@ -1,6 +1,5 @@
 package types
 
-
 type Db struct {
 	Name string `json:"name"`
 }
@@ -10,21 +9,31 @@ type Table struct {
 }
 
 type Query struct {
-	Db string
+	Db    string
 	Table string
 	Limit int
 	Pluck []string
+}
+
+type CountQuery struct {
+	Db    string
+	Table string
+	Num   int
 }
 
 type Doc struct {
 	Data string `json:"data"`
 }
 
+type Count struct {
+	Data int `json:"num"`
+}
+
 type Conf struct {
 	Addr string
 	User string
-	Pwd string
-	Dev bool
+	Pwd  string
+	Dev  bool
 	Verb int
 	Cors []string
 }

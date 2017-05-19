@@ -86,6 +86,9 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
    # get a list of tables in a database
    curl -g 'http://localhost:8080/graphql?query={tables(db:"rethinkdb"){name}}'
    
+   # count documents in a table
+   curl -g 'http://localhost:8080/graphql?query={count(db:"rethinkdb",table:"logs"){num}}'
+   
    # get all documents from a table
    curl -g 'http://localhost:8080/graphql?query={docs(db:"rethinkdb",table:"server_status"){data}}'
    

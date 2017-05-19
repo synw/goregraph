@@ -2,12 +2,11 @@ package db
 
 import (
 	"fmt"
-	"strings"
 	"github.com/graphql-go/graphql"
 	"github.com/synw/goregraph/lib-r/types"
 	"reflect"
+	"strings"
 )
-
 
 var dbType = graphql.NewObject(
 	graphql.ObjectConfig{
@@ -36,6 +35,15 @@ var docType = graphql.NewObject(
 	},
 )
 
+var countType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "Count",
+		Fields: graphql.Fields{
+			"num": &graphql.Field{Type: graphql.Int},
+		},
+	},
+)
+
 var queryType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Query",
@@ -60,6 +68,27 @@ var queryType = graphql.NewObject(
 						return tables, tr.ToErr()
 					}
 					return tables, nil
+				},
+			},
+			"count": &graphql.Field{
+				Type: countType,
+				Args: graphql.FieldConfigArgument{
+					"db": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"table": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+				},
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					db := p.Args["db"].(string)
+					table := p.Args["table"].(string)
+					q := &types.CountQuery{db, table, 0}
+					num, tr := countDocs(q)
+					if tr != nil {
+						return num, tr.ToErr()
+					}
+					return num, nil
 				},
 			},
 			"doc": &graphql.Field{
@@ -129,7 +158,7 @@ var queryType = graphql.NewObject(
 						return res, tr.ToErr()
 					}
 					var data []*types.Doc
-					for _, doc := range(res) {
+					for _, doc := range res {
 						data = append(data, doc)
 						//fmt.Println("ELEM", doc.Data[0:15])
 					}
