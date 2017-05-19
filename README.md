@@ -19,11 +19,13 @@ to serve some basic read only queries from it
    go install github.com/synw/goregraph
    ```
 
-Grab the binary and make a `config.json` file to in the same folder than the binary. Set your Rethinkdb database's address
+Grab the binary and make a `config.json` file to in the same folder than the binary. Set your database's type, address
 and credentials:
 
    ```javascript
    {
+   	"type": "rethinkdb",
+	"host": "localhost:8080",
 	"addr":"localhost:28015",
 	"user":"",
 	"password":"",
@@ -31,7 +33,8 @@ and credentials:
 	}
    ```
 
-The `cors` parameter is a list of authorized domains that will receive cors headers in the http responses
+The `cors` parameter is a list of authorized domains that will receive cors headers in the http responses. `host` is the
+http host adress and `addr` is the database location
 
 ## Run the Graphql server
 
