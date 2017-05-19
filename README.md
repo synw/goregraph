@@ -67,12 +67,13 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
     http.HandleFunc("/graphql", grg.HandleQuery)
     
     // database config
+    host := ":8080
     addr := "localhost:28015"
 	user := "admin"
 	pwd := "adminpasswd"
 	cors := []string{"localhost"}
 	verbosity = 0
-	conf := &types.Conf{addr, user, pwd, dev, verbosity, cors}
+	conf := &types.Conf{host, addr, user, pwd, dev, verbosity, cors}
 	
     // init and check the database connection
 	err := db.Init(conf)
