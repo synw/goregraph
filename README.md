@@ -9,8 +9,6 @@ to serve some basic read only queries from it
 ## Supported databases
 
 - [x] Rethinkdb
-- [ ] Postgresql
-- [ ] Sqlite
 
 ## Install
 
@@ -116,7 +114,7 @@ Note: the `data` received is a string: you will have to parse it to turn it into
 
 ## Todo
 
-- [ ] Add options for the http server
+- [x] Add options for the http server
 - [x] Add cors headers option
 - [ ] Add options to limit the dbs and tables that can be queried
 - [ ] Better error handling
