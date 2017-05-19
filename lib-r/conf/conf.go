@@ -3,10 +3,9 @@ package conf
 import (
 	"errors"
 	"github.com/spf13/viper"
-	"github.com/synw/terr"
 	"github.com/synw/goregraph/lib-r/types"
+	"github.com/synw/terr"
 )
-
 
 func GetConf(dev bool, verbosity int) (*types.Conf, *terr.Trace) {
 	var conf *types.Conf
@@ -17,6 +16,8 @@ func GetConf(dev bool, verbosity int) (*types.Conf, *terr.Trace) {
 		viper.SetConfigName("config")
 	}
 	viper.AddConfigPath(".")
+	viper.SetDefault("type", "")
+	viper.SetDefault("host", "localhost:8080")
 	viper.SetDefault("addr", "localhost:28015")
 	viper.SetDefault("user", "")
 	viper.SetDefault("password", "")
@@ -34,15 +35,22 @@ func GetConf(dev bool, verbosity int) (*types.Conf, *terr.Trace) {
 			return conf, trace
 		}
 	}
+	dbtype := viper.Get("type").(string)
+	host := viper.Get("host").(string)
 	addr := viper.Get("addr").(string)
 	user := viper.Get("user").(string)
 	pwd := viper.Get("password").(string)
+	if dbtype == "" {
+		err := errors.New("Please set the database type into your config file: ex: \"type\":\"rethinkdb\"")
+		tr := terr.New("conf.GetConf", err)
+		terr.Fatal("loading configuration", tr)
+	}
 	// headers
 	crs := viper.Get("cors").([]interface{})
 	var cors []string
-	for _, c := range(crs) {
+	for _, c := range crs {
 		cors = append(cors, c.(string))
 	}
-	endconf := &types.Conf{addr, user, pwd, dev, verbosity, cors}
+	endconf := &types.Conf{dbtype, host, addr, user, pwd, dev, verbosity, cors}
 	return endconf, nil
 }

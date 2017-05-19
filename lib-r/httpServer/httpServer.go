@@ -44,7 +44,7 @@ func InitHttpServer(serve bool) {
 	})
 	// init
 	httpServer := &http.Server{
-		Addr:         state.Addr,
+		Addr:         state.Conf.Host,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		Handler:      r,
@@ -52,7 +52,7 @@ func InitHttpServer(serve bool) {
 	state.HttpServer = httpServer
 	// run
 	if state.Verbosity > 0 {
-		fmt.Println("Starting http server ...")
+		fmt.Println("Starting http server at " + state.Conf.Host + "...")
 	}
 	if serve {
 		Run()

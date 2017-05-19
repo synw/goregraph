@@ -1,32 +1,39 @@
 package db
 
 import (
+	"errors"
 	"fmt"
-	r "gopkg.in/dancannon/gorethink.v3"
-	"github.com/synw/terr"
+	"github.com/synw/goregraph/db/rethinkdb"
 	"github.com/synw/goregraph/lib-r/state"
 	"github.com/synw/goregraph/lib-r/types"
+	"github.com/synw/terr"
 	//"encoding/json"
 	//"reflect"
 )
 
-var conn *r.Session
 var verbose = 0
-
 
 func Init(config *types.Conf, noinit ...bool) error {
 	if len(noinit) == 0 {
 		state.InitState(config.Dev, config.Verb, config)
 	}
-	tr := initDb()
-	if tr != nil {
-		err := tr.ToErr()
-		return err
-	}
-	dbs, tr := GetDbs()
-	if tr != nil {
-		err := tr.ToErr()
-		return err
+	var tr *terr.Trace
+	var dbs []string
+	if state.Conf.DbType == "rethinkdb" {
+		tr = rethinkdb.InitDb()
+		if tr != nil {
+			err := tr.ToErr()
+			return err
+		}
+		dbs, tr = rethinkdb.GetDbs()
+		if tr != nil {
+			err := tr.ToErr()
+			return err
+		}
+	} else {
+		err := errors.New("Database type not implemented")
+		tr := terr.New("db.Init", err)
+		return tr.ToErr()
 	}
 	state.Dbs = dbs
 	// print message if verbose option
@@ -34,72 +41,84 @@ func Init(config *types.Conf, noinit ...bool) error {
 	return nil
 }
 
-func GetTables(db string) ([]string, *terr.Trace) {
-	var tables []string
-	res, err := r.DB(db).TableList().Run(conn)
-	if err != nil {
+func GetDbs() []string {
+	return state.Dbs
+}
+
+func getDbs() []*types.Db {
+	var dbs []*types.Db
+	for _, db := range state.Dbs {
+		d := &types.Db{db}
+		dbs = append(dbs, d)
+	}
+	return dbs
+}
+
+func countDocs(q *types.CountQuery) (*types.Count, *terr.Trace) {
+	var count *types.Count
+	if state.Conf.DbType == "rethinkdb" {
+		n, tr := rethinkdb.CountDocs(q)
+		count = n
+		if tr != nil {
+			tr = terr.Pass("db.CountDocs", tr)
+			return count, tr
+		}
+	} else {
+		err := errors.New("Database type not implemented")
+		tr := terr.New("db.CountDocs", err)
+		return count, tr
+	}
+	return count, nil
+}
+
+func getDoc(q *types.Query) (*types.Doc, *terr.Trace) {
+	var doc *types.Doc
+	if state.Conf.DbType == "rethinkdb" {
+		doc, tr := rethinkdb.GetDoc(q)
+		if tr != nil {
+			tr = terr.Pass("db.GetDoc", tr)
+			return doc, tr
+		}
+	} else {
+		err := errors.New("Database type not implemented")
+		tr := terr.New("db.GetDoc", err)
+		return doc, tr
+	}
+	return doc, nil
+}
+
+func getDocs(q *types.Query) ([]*types.Doc, *terr.Trace) {
+	var docs []*types.Doc
+	if state.Conf.DbType == "rethinkdb" {
+		d, tr := rethinkdb.GetDocs(q)
+		docs = d
+		if tr != nil {
+			tr = terr.Pass("db.GetDocs", tr)
+			return docs, tr
+		}
+	} else {
+		err := errors.New("Database type not implemented")
+		tr := terr.New("db.GetDocs", err)
+		return docs, tr
+	}
+	return docs, nil
+}
+
+func getTables(dbstr string) ([]types.Table, *terr.Trace) {
+	var tables []types.Table
+	if state.Conf.DbType == "rethinkdb" {
+		t, tr := rethinkdb.GetTables(dbstr)
+		tables = t
+		if tr != nil {
+			tr = terr.Pass("db.GetTables", tr)
+			return tables, tr
+		}
+	} else {
+		err := errors.New("Database type not implemented")
 		tr := terr.New("db.GetTables", err)
 		return tables, tr
 	}
-	var row interface{}
-	for res.Next(&row) {
-	    tables = append(tables, row.(string))
-	}
-	if res.Err() != nil {
-	    tr := terr.New("db.GetTables", err)
-		return tables, tr
-	}
 	return tables, nil
-}
-
-func GetDbs() ([]string, *terr.Trace) {
-	var dbs []string
-	res, err := r.DBList().Run(conn)
-	if err != nil {
-		tr := terr.New("db.GetDbs", err)
-		return dbs, tr
-	}
-	var row interface{}
-	for res.Next(&row) {
-	    dbs = append(dbs, row.(string))
-	}
-	if res.Err() != nil {
-	    tr := terr.New("db.GetDbs", err)
-		return dbs, tr
-	}
-	return dbs, nil
-}
-
-// internal methods
-
-func initDb() *terr.Trace {
-	cn, tr := connect()
-	if tr != nil {
-		tr := terr.Pass("db.InitDb", tr)
-		return tr
-	}
-	conn = cn
-	return nil
-}
-
-func connect() (*r.Session, *terr.Trace) {
-	user := state.Conf.User
-	pwd := state.Conf.Pwd
-	addr := state.Conf.Addr
-	// connect to Rethinkdb
-	session, err := r.Connect(r.ConnectOpts{
-		Address: addr,
-		Username: user,
-		Password: pwd,
-		InitialCap: 10,
-        MaxOpen:    10,
-	})
-    if err != nil {
-        tr := terr.New("db.rethinkdb.connectToDb()", err)
-        terr.Fatal("db.connect", tr)
-        return session, tr
-    }
-    return session, nil
 }
 
 func ready() {

@@ -30,10 +30,12 @@ type Count struct {
 }
 
 type Conf struct {
-	Addr string
-	User string
-	Pwd  string
-	Dev  bool
-	Verb int
-	Cors []string
+	DbType string
+	Host   string
+	Addr   string
+	User   string
+	Pwd    string
+	Dev    bool
+	Verb   int
+	Cors   []string
 }

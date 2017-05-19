@@ -1,16 +1,15 @@
-package db
+package rethinkdb
 
 import (
 	"fmt"
 	//"strings"
 	"github.com/Jeffail/gabs"
-	"github.com/synw/goregraph/lib-r/state"
 	"github.com/synw/goregraph/lib-r/types"
 	"github.com/synw/terr"
 	r "gopkg.in/dancannon/gorethink.v3"
 )
 
-func countDocs(q *types.CountQuery) (*types.Count, *terr.Trace) {
+func CountDocs(q *types.CountQuery) (*types.Count, *terr.Trace) {
 	count := &types.Count{}
 	reql := r.DB(q.Db).Table(q.Table).Count()
 	res, err := reql.Run(conn)
@@ -24,7 +23,7 @@ func countDocs(q *types.CountQuery) (*types.Count, *terr.Trace) {
 	return count, nil
 }
 
-func getDoc(q *types.Query) (*types.Doc, *terr.Trace) {
+func GetDoc(q *types.Query) (*types.Doc, *terr.Trace) {
 	var reql r.Term
 	var doc *types.Doc
 	reql = r.DB(q.Db).Table(q.Table)
@@ -43,7 +42,7 @@ func getDoc(q *types.Query) (*types.Doc, *terr.Trace) {
 	return doc, nil
 }
 
-func getDocs(q *types.Query) ([]*types.Doc, *terr.Trace) {
+func GetDocs(q *types.Query) ([]*types.Doc, *terr.Trace) {
 	var docs []*types.Doc
 	reql := r.DB(q.Db).Table(q.Table)
 	if q.Limit > 0 {
@@ -74,24 +73,22 @@ func getDocs(q *types.Query) ([]*types.Doc, *terr.Trace) {
 	return docs, nil
 }
 
-func getTables(dbstr string) ([]*types.Table, *terr.Trace) {
-	var tables []*types.Table
-	tbs, tr := GetTables(dbstr)
-	if tr != nil {
+func GetTables(db string) ([]types.Table, *terr.Trace) {
+	var tables []types.Table
+	res, err := r.DB(db).TableList().Run(conn)
+	if err != nil {
+		tr := terr.New("db.rethinkdb.GetTables", err)
 		return tables, tr
 	}
-	for _, table := range tbs {
-		t := &types.Table{table}
-		tables = append(tables, t)
+	var row interface{}
+	for res.Next(&row) {
+		t := row.(string)
+		table := types.Table{t}
+		tables = append(tables, table)
+	}
+	if res.Err() != nil {
+		tr := terr.New("db.rethinkdb.GetTables", err)
+		return tables, tr
 	}
 	return tables, nil
-}
-
-func getDbs() []*types.Db {
-	var dbs []*types.Db
-	for _, db := range state.Dbs {
-		d := &types.Db{db}
-		dbs = append(dbs, d)
-	}
-	return dbs
 }
