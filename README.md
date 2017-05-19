@@ -3,7 +3,7 @@
 Turn a schemaless document database into an Graphql server in one minute: just connect a database and run the server. 
 It is also possible to use this package as a library to run Reql queries from Graphql queries
 
-The goal of this project is to have an API server that can plug on an existing Rethinkdb database and be instantly ready
+The goal of this project is to have an API server that can plug on an existing database and be instantly ready
 to serve some basic read only queries from it
 
 ## Supported databases
