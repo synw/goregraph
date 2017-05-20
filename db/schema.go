@@ -1,9 +1,12 @@
 package db
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/graphql-go/graphql"
 	"github.com/synw/goregraph/lib-r/types"
+	"github.com/synw/terr"
 	"reflect"
 	"strings"
 )
@@ -167,6 +170,26 @@ var queryType = graphql.NewObject(
 			},
 		},
 	})
+
+func RunQuery(q string) ([]byte, *terr.Trace) {
+	res := graphql.Do(graphql.Params{
+		Schema:        Schem,
+		RequestString: q,
+	})
+	b := []byte{}
+	if len(res.Errors) > 0 {
+		msg := fmt.Sprintf("wrong res, unexpected errors: %v", res.Errors)
+		err := errors.New(msg)
+		tr := terr.New("db.schema.RunQuery", err)
+		tr.Printf("db.schema.RunQuery")
+		return b, tr
+	}
+	data := res.Data
+	json_bytes, _ := json.Marshal(data)
+	//fmt.Println(res.Data)
+
+	return json_bytes, nil
+}
 
 var Schem, _ = graphql.NewSchema(
 	graphql.SchemaConfig{

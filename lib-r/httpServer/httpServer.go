@@ -2,11 +2,8 @@ package httpServer
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/goware/cors"
-	"github.com/graphql-go/graphql"
 	"github.com/pressly/chi"
 	"github.com/pressly/chi/middleware"
 	"github.com/synw/goregraph/db"
@@ -78,19 +75,7 @@ func Stop() *terr.Trace {
 
 func HandleQuery(response http.ResponseWriter, request *http.Request) {
 	q := request.URL.Query()["query"][0]
-	res := graphql.Do(graphql.Params{
-		Schema:        db.Schem,
-		RequestString: q,
-	})
-	if len(res.Errors) > 0 {
-		msg := fmt.Sprintf("wrong res, unexpected errors: %v", res.Errors)
-		err := errors.New(msg)
-		tr := terr.New("httpServer.handleQuery", err)
-		tr.Printf("httpServer.handleQuery")
-	}
-	data := res.Data
-	//fmt.Println("DATA", data)
-	json_bytes, _ := json.Marshal(data)
+	json_bytes, _ := db.RunQuery(q)
 	response = headers(response)
 	fmt.Fprintf(response, "%s\n", json_bytes)
 }

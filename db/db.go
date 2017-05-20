@@ -11,8 +11,6 @@ import (
 	//"reflect"
 )
 
-var verbose = 0
-
 func Init(config *types.Conf, noinit ...bool) error {
 	if len(noinit) == 0 {
 		state.InitState(config.Dev, config.Verb, config)
@@ -22,6 +20,10 @@ func Init(config *types.Conf, noinit ...bool) error {
 	if state.Conf.DbType == "rethinkdb" {
 		tr = rethinkdb.InitDb()
 		if tr != nil {
+			tr = terr.Pass("db.Init", tr)
+			if state.Verbosity > 0 {
+				tr.Printf("db.Init")
+			}
 			err := tr.ToErr()
 			return err
 		}
