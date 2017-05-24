@@ -59,13 +59,11 @@ Check the [available queries](https://github.com/synw/goregraph#available-querie
    )
 
    func main() {
-    //normal stuff
-    http.HandleFunc("/*", MyPageHandler)
     // map your graphql endpoint here
     http.HandleFunc("/graphql", grg.HandleQuery)
     
     // database config
-    host := ":8080
+    host := ":8080"
     addr := "localhost:28015"
 	user := "admin"
 	pwd := "adminpasswd"
