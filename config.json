@@ -1,0 +1,8 @@
+{
+	"type": "rethinkdb",
+	"host": "localhost:8080",
+	"addr":"localhost:28015",
+	"user":"",
+	"password":"",
+	"cors": ["*"]
+}
