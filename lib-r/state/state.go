@@ -21,11 +21,12 @@ func InitState(dev bool, verbosity int, config ...*types.Conf) *terr.Trace {
 	if len(config) == 1 {
 		Conf = config[0]
 		return nil
+	} else {
+		cf, tr := conf.GetConf(dev, verbosity)
+		if tr != nil {
+			return tr
+		}
+		Conf = cf
 	}
-	cf, tr := conf.GetConf(dev, verbosity)
-	if tr != nil {
-		return tr
-	}
-	Conf = cf
 	return nil
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/graphql-go/graphql"
 	"github.com/synw/goregraph/lib-r/types"
 	"github.com/synw/terr"
-	"reflect"
 	"strings"
 )
 
@@ -116,7 +115,7 @@ var queryType = graphql.NewObject(
 					if tr != nil {
 						return doc.Data, tr.ToErr()
 					}
-					fmt.Println("DOC", reflect.TypeOf(doc), doc.Data)
+					//fmt.Println("DOC", reflect.TypeOf(doc), doc.Data)
 					return doc, nil
 				},
 			},
@@ -186,8 +185,6 @@ func RunQuery(q string) ([]byte, *terr.Trace) {
 	}
 	data := res.Data
 	json_bytes, _ := json.Marshal(data)
-	//fmt.Println(res.Data)
-
 	return json_bytes, nil
 }
 
